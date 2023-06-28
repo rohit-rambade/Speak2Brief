@@ -3,7 +3,12 @@ const multer = require("multer");
 require("dotenv").config();
 const app = express();
 const AWS = require("aws-sdk");
+const { Configuration, OpenAIApi } = require("openai");
 
+const configuration = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+const openai = new OpenAIApi(configuration);
 const port = process.env.PORT;
 
 //AWS Credentials
@@ -18,6 +23,8 @@ AWS.config.update({
   secretAccessKey,
   region,
 });
+
+
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
@@ -47,6 +54,28 @@ app.post("/upload", upload.array("files"), async (req, res) => {
   }
 });
 
+//Get Summary
+async function generateSummary(transcript) {
+  try {
+    const completion = await openai.createCompletion({
+      model: "text-davinci-003",
+      prompt: `Make A Summary"${transcript}"`,
+      temperature: 1,
+      max_tokens: 256,
+      top_p: 1,
+      frequency_penalty: 0,
+      presence_penalty: 0,
+
+
+    });
+
+    return summary = completion.data.choices
+
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
 //Get Transcripts
 async function getJsonFileFromS3(filename) {
   const s3 = new AWS.S3();
@@ -60,8 +89,9 @@ async function getJsonFileFromS3(filename) {
     const response = await s3.getObject(getObjectParams).promise();
 
     const jsonContent = JSON.parse(response.Body.toString());
-
-    return jsonContent.results.transcripts;
+    const transcript = jsonContent.results.transcripts[0].transcript;
+    const summary = generateSummary(transcript);
+    return summary;
   } catch (error) {
     res.status(404).json({
       success: false,
