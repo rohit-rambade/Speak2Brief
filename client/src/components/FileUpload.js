@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 export const FileUpload = () => {
   const [selectedFiles, setSelectedFiles] = useState([]);
-
+  const [summary, setSummary] = useState({})
 
   const handleFileChange = (e) => {
     let file = e.target.files
@@ -28,6 +28,26 @@ export const FileUpload = () => {
     }
   };
   console.log(selectedFiles);
+  const getSummary = async () => {
+    const selectedFilesArray = [...selectedFiles];
+    const fileNames = selectedFilesArray.map(file => file.name);
+
+    try {
+      const response = await axios.get('http://localhost:3001/transcripts', {
+        params: {
+          files: fileNames.join(',')
+        }
+      });
+
+      response.data.forEach(obj => {
+        const text = obj.text;
+        setSummary(text)
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  console.log(summary);
   return (
     <div className="flex flex-col gap-y-6">
       <label className="block">
@@ -49,6 +69,14 @@ export const FileUpload = () => {
       >
         Upload
       </button>
+      <div>
+        <button onClick={getSummary} className="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-black hover:text-white focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">get</button>
+        <div>
+          {summary && summary.length > 0 ? <p>{summary}</p> : (
+            <p>No transcripts available.</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

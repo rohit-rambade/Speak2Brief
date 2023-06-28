@@ -3,6 +3,9 @@ const multer = require("multer");
 require("dotenv").config();
 const app = express();
 const AWS = require("aws-sdk");
+const cors = require('cors')
+
+app.use(cors())
 const { Configuration, OpenAIApi } = require("openai");
 
 const configuration = new Configuration({
@@ -59,9 +62,9 @@ async function generateSummary(transcript) {
   try {
     const completion = await openai.createCompletion({
       model: "text-davinci-003",
-      prompt: `Make A Summary"${transcript}"`,
-      temperature: 1,
-      max_tokens: 256,
+      prompt: `Make A overall Summary in points "${transcript}"`,
+      temperature: 0.5,
+      max_tokens: 3000,
       top_p: 1,
       frequency_penalty: 0,
       presence_penalty: 0,
@@ -106,7 +109,8 @@ app.get("/transcripts", async (req, res) => {
   // console.log(files);
   try {
     const transcripts = await getJsonFileFromS3(files);
-    res.json(transcripts);
+    // res.json(transcripts);
+    res.send(transcripts)
 
   } catch (error) {
     res.status(404).json({
