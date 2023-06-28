@@ -27,6 +27,7 @@ export const FileUpload = () => {
 
     }
   };
+  console.log(selectedFiles);
   return (
     <div className="flex flex-col gap-y-6">
       <label className="block">

@@ -47,6 +47,47 @@ app.post("/upload", upload.array("files"), async (req, res) => {
   }
 });
 
+//Get Transcripts
+async function getJsonFileFromS3(filename) {
+  const s3 = new AWS.S3();
+  const jsonKey = `transcripts/${filename}-transcript.json`;
+  try {
+    const getObjectParams = {
+      Bucket: bucketName,
+      Key: jsonKey,
+    };
+
+    const response = await s3.getObject(getObjectParams).promise();
+
+    const jsonContent = JSON.parse(response.Body.toString());
+
+    return jsonContent.results.transcripts;
+  } catch (error) {
+    res.status(404).json({
+      success: false,
+      message: "File Not Found",
+    });
+  }
+}
+
+app.get("/transcripts", async (req, res) => {
+  const { files } = req.query;
+
+  // console.log(files);
+  try {
+    const transcripts = await getJsonFileFromS3(files);
+    res.json(transcripts);
+
+  } catch (error) {
+    res.status(404).json({
+      success: false,
+      message: "Failed to retrive Transcripts JSON",
+    });
+
+  }
+});
+
+
 app.listen(port, () => {
   console.log(`Server Started on Port ${port}`);
 });
