@@ -50,30 +50,32 @@ export const FileUpload = () => {
   console.log(summary);
   return (
     <div className="flex flex-col gap-y-6">
-      <label className="block">
-        <span className="sr-only">Choose Audio File</span>
-        <input
-          onChange={handleFileChange}
-          type="file"
-          className="block w-full text-sm text-gray-500
+      <div className="flex flex-row justify-center items-center">
+        <label className="block">
+          <span className="sr-only">Choose Audio File</span>
+          <input
+            onChange={handleFileChange}
+            type="file"
+            className="block w-full text-sm text-gray-500
           file:mr-4 file:py-2 file:px-4
           file:rounded-md file:border-0
           file:text-sm file:font-semibold
           file:bg-blue-500 file:text-white
           hover:file:bg-blue-600
-        "/>
-      </label>
-      <button
-        onClick={handleUpload}
-        className="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-black hover:text-white focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-      >
-        Upload
-      </button>
-      <div>
-        <button onClick={getSummary} className="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-black hover:text-white focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">get</button>
-        <div>
+          "/>
+        </label>
+        <button
+          onClick={handleUpload}
+          className="py-2.5 px-5  text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-black hover:text-white focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+        >
+          Upload
+        </button>
+      </div>
+      <div className="flex flex-col justify-center items-center p-5">
+        <button onClick={getSummary} className="py-2.5 px-5  text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-black hover:text-white focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Get Summary</button>
+        <div className="p-10">
           {summary && summary.length > 0 ? <p>{summary}</p> : (
-            <p>No transcripts available.</p>
+            <p>No Transcripts Available.</p>
           )}
         </div>
       </div>
